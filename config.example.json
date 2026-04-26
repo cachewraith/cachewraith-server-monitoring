@@ -1,0 +1,58 @@
+{
+  "server_name": "cachewraith-vps-01",
+  "interval_seconds": 60,
+  "log_file": "/var/log/cachewraith-monitor.log",
+
+  "thresholds": {
+    "ram_percent": 90,
+    "disk_percent": 90,
+    "load_average_1m": 4.0,
+    "ssh_failed_attempts": 10,
+    "nginx_requests_per_minute": 120,
+    "nginx_404_per_minute": 30,
+    "website_timeout_seconds": 5
+  },
+
+  "cooldowns": {
+    "default_seconds": 900,
+    "resource_alert_seconds": 900,
+    "website_alert_seconds": 300,
+    "service_alert_seconds": 300,
+    "ssh_bruteforce_seconds": 600,
+    "web_scan_seconds": 600
+  },
+
+  "telegram": {
+    "default_thread_id": null,
+    "alert_threads": {}
+  },
+
+  "disk_paths": [
+    "/"
+  ],
+
+  "services": [
+    "ssh",
+    "nginx"
+  ],
+
+  "websites": [
+    "https://example.com"
+  ],
+
+  "logs": {
+    "ssh_auth": "/var/log/auth.log",
+    "nginx_access": "/var/log/nginx/access.log"
+  },
+
+  "nginx_suspicious_paths": [
+    "/.env",
+    "/wp-admin",
+    "/xmlrpc.php",
+    "/phpmyadmin",
+    "/.git",
+    "../",
+    "union select",
+    "<script"
+  ]
+}

@@ -1,0 +1,41 @@
+# Build output
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+Makefile
+compile_commands.json
+
+# Local runtime configuration
+config.json
+*.env
+
+# Logs and runtime files
+*.log
+*.pid
+*.lock
+core
+core.*
+
+# Generated binaries and libraries
+cachewraith-monitor
+cachewraith-tests
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

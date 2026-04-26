@@ -1,0 +1,15 @@
+[Unit]
+Description=CacheWraith Server Monitoring Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cachewraith-monitor --config /etc/cachewraith-monitor/config.json
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/cachewraith-monitor/cachewraith.env
+User=root
+
+[Install]
+WantedBy=multi-user.target
