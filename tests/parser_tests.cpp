@@ -13,12 +13,14 @@ int main() {
     assert(failed->kind == SshEvent::Kind::FailedPassword);
     assert(failed->user == "admin");
     assert(failed->ip == "1.2.3.4");
+    assert(failed->device_name == "host");
 
     const auto accepted = parseSshLogLine("Apr 25 10:01:00 host sshd[124]: Accepted publickey for root from 5.6.7.8 port 22 ssh2");
     assert(accepted);
     assert(accepted->kind == SshEvent::Kind::AcceptedPublicKey);
     assert(accepted->user == "root");
     assert(accepted->ip == "5.6.7.8");
+    assert(accepted->device_name == "host");
 
     const auto nginx = parseNginxAccessLine(R"(1.2.3.4 - - [25/Apr/2026:10:00:00 +0000] "GET /.env HTTP/1.1" 404 12 "-" "curl")");
     assert(nginx);

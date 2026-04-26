@@ -17,6 +17,7 @@ struct SshEvent {
     std::string user;
     std::string ip;
     std::string method;
+    std::string device_name;
 };
 
 std::optional<SshEvent> parseSshLogLine(const std::string& line);
