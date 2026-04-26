@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <string>
 
@@ -11,11 +12,19 @@ public:
 
     bool configured() const;
     bool sendMessage(const std::string& text, std::optional<long long> message_thread_id = std::nullopt) const;
+    bool sendMessageAsync(const std::string& text, std::optional<long long> message_thread_id = std::nullopt) const;
     bool sendTestMessage(const std::string& server_name, std::optional<long long> message_thread_id = std::nullopt) const;
 
 private:
-    std::optional<std::string> token_;
-    std::optional<std::string> chat_id_;
+    struct QueuedMessage;
+    struct State;
+
+    static bool performSend(const std::string& token,
+                            const std::string& chat_id,
+                            const std::string& text,
+                            std::optional<long long> message_thread_id);
+
+    std::shared_ptr<State> state_;
 };
 
 } // namespace cachewraith

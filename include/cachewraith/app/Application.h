@@ -18,13 +18,21 @@ public:
     void stop();
 
 private:
+    struct MonitorSchedule {
+        std::unique_ptr<IMonitor> monitor;
+        int interval_seconds{1};
+        int seconds_until_next_check{0};
+    };
+
     void registerMonitors();
+    void addMonitor(std::unique_ptr<IMonitor> monitor, int interval_seconds);
     void runOnce();
+    void runScheduled();
 
     Config config_;
     TelegramNotifier notifier_;
     AlertManager alert_manager_;
-    std::vector<std::unique_ptr<IMonitor>> monitors_;
+    std::vector<MonitorSchedule> monitors_;
     std::atomic_bool running_{true};
 };
 

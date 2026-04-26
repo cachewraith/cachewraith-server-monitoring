@@ -3,8 +3,28 @@
 #include "cachewraith/util/StringUtils.h"
 
 #include <regex>
+#include <sstream>
 
 namespace cachewraith {
+
+namespace {
+
+std::string configuredWebsiteText(const std::vector<std::string>& websites) {
+    if (websites.empty()) {
+        return "none configured";
+    }
+
+    std::ostringstream text;
+    for (std::size_t i = 0; i < websites.size(); ++i) {
+        if (i > 0) {
+            text << ", ";
+        }
+        text << websites[i];
+    }
+    return text.str();
+}
+
+} // namespace
 
 std::optional<NginxAccessEvent> parseNginxAccessLine(const std::string& line) {
     static const std::regex common(R"(^([0-9a-fA-F:\.]+)\s+\S+\s+\S+\s+\[[^\]]+\]\s+"([A-Z]+)\s+([^"\s]+)[^"]*"\s+([0-9]{3}))");
@@ -59,8 +79,9 @@ std::vector<Alert> NginxLogMonitor::check() {
             alert.key = event->ip + ":suspicious";
             alert.title = "WEB SCAN DETECTED";
             alert.severity = AlertSeverity::Warning;
-            alert.message = "Server: " + config_.server_name + "\nIP: " + event->ip +
-                            "\nReason: suspicious path\nPath: " + counter.last_suspicious_path +
+            alert.message = "Server: " + config_.server_name + "\nSource IP: " + event->ip +
+                            "\nWebsite URL: " + configuredWebsiteText(config_.websites) +
+                            "\nReason: suspicious path requested\nPath: " + counter.last_suspicious_path +
                             "\nCount: " + std::to_string(counter.suspicious);
             alerts.push_back(std::move(alert));
             counter.suspicious = 0;
@@ -72,7 +93,8 @@ std::vector<Alert> NginxLogMonitor::check() {
             alert.key = event->ip;
             alert.title = "HIGH WEB REQUEST RATE";
             alert.severity = AlertSeverity::Warning;
-            alert.message = "Server: " + config_.server_name + "\nIP: " + event->ip +
+            alert.message = "Server: " + config_.server_name + "\nSource IP: " + event->ip +
+                            "\nWebsite URL: " + configuredWebsiteText(config_.websites) +
                             "\nRequests: " + std::to_string(counter.requests) + "\nWindow: 1 minute";
             alerts.push_back(std::move(alert));
             counter.requests = 0;
@@ -84,7 +106,8 @@ std::vector<Alert> NginxLogMonitor::check() {
             alert.key = event->ip;
             alert.title = "WEB 404 BURST";
             alert.severity = AlertSeverity::Warning;
-            alert.message = "Server: " + config_.server_name + "\nIP: " + event->ip +
+            alert.message = "Server: " + config_.server_name + "\nSource IP: " + event->ip +
+                            "\nWebsite URL: " + configuredWebsiteText(config_.websites) +
                             "\n404 Responses: " + std::to_string(counter.not_found) + "\nWindow: 1 minute";
             alerts.push_back(std::move(alert));
             counter.not_found = 0;
